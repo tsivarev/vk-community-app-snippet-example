@@ -1,0 +1,157 @@
+body {
+    padding: 0;
+    margin: 0;
+    background-color: #f8f8f8;
+    color: #5c5c5c;
+    font-size: 16px;
+    font-weight: 300;
+    font-family: -apple-system, BlinkMacSystemFont, Roboto, 'Open Sans', sans-serif;
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+b {
+    font-weight: 500;
+}
+
+h2 {
+    font-weight: 500;
+}
+
+h3 {
+    margin: 1em 0;
+}
+
+a {
+    text-decoration: none;
+    outline: none;
+    color: #5e81a8;
+}
+
+input[type=radio] {
+    vertical-align: middle;
+    width: 15px;
+    height: 15px;
+    margin: 0 5px;
+}
+
+label {
+    display: block;
+    width: 100%;
+    padding: 7px 5px;
+    font-weight: 400;
+}
+
+label:hover {
+    background-color: #f1f1f1;
+}
+
+.header {
+    min-height: 50px;
+    padding: 5px 25px;
+    background-color: #688bb0;
+    color: #d9e2ec;
+}
+
+.header-title {
+    color: #f1f1f1;
+}
+
+.content {
+    padding: 5px 25px;
+    text-align: center;
+}
+
+.question-title {
+    color: #333;
+}
+
+.question-choice {
+    text-align: left;
+}
+
+.btn:active, .btn:hover {
+    background-color: #f1f1f1;
+}
+
+.btn {
+    padding: 7px 15px;
+    height: 30px;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-block;
+    line-height: 16px;
+}
+
+.btn-vk-ui:active, .btn-vk-ui:hover {
+    background-color: #688bb0;
+}
+
+.btn-vk-ui {
+    letter-spacing: 0.1px;
+    color: #fff;
+    background: #5e81a8;
+    border-radius: 2px;
+    font-family: -apple-system, BlinkMacSystemFont, Roboto, "Open Sans", "Helvetica Neue", sans-serif;
+    font-weight: 100;
+    font-size: 0.8125em;
+}
+
+.btn-negative:active, .btn-negative:hover {
+    background-color: #aaaaaa;
+}
+
+.btn-negative {
+    cursor: not-allowed;
+    background-color: #aaaaaa;
+}
+
+.btn-question {
+    position: absolute;
+}
+
+#btn-question-submit {
+    right: 25px;
+}
+
+.wrapper-buttons-control{
+    margin: 0 0 50px 0;
+}
+
+.title{
+    font-size: 1.5em;
+}
+
+.score{
+    font-size: 3em;
+    line-height: 100px;
+}
+
+.max-score::before{
+    content: '/\a0';
+    display: inline-block;
+}
+
+.max-score{
+    display: block;
+    position: absolute;
+    bottom: 5px;
+    right: -25px;
+    color: #5c5c5c;
+}
+
+.circle{
+    width: 100px;
+    height: 100px;
+    margin: 25px auto;
+    position: relative;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    background-color: #5e81a8;
+    color: #f1f1f1;
+}

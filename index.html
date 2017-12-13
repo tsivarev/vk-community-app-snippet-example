@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta property="og:description"
+          content="Приложение 'Экзамен' предложит вам пройти тест из предложенной категории и поделиться результатом с друзьями">
+    <!--meta property="og:image" content="images/snippet_img.jpg"-->
+
+    <title>Реши тест в приложении Экзамен</title>
+
+    <link rel="stylesheet" href="fonts.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="header">
+    <h2 class="header-title" id="txt-title-header">Экзамен</h2>
+    <p class="progress" id="txt-title-exam-progress" style="display:none;">Вопрос <b>1</b> из <b>1</b></p>
+</div>
+<section class="content" id="page-install" style="display: none;">
+    <div class="question" id="question-install">
+        <h3 class="question-title">Установить приложение в сообщество?</h3>
+        <ul class="question-choice">
+            <li>
+                <label for="btn-show-install-page">
+                    <input type="radio" id="btn-show-install-page" name="question-install"> Да
+                </label>
+            </li>
+            <li>
+                <label for="answer-2">
+                    <input type="radio" id="answer-2" name="question-install"> Нет
+                </label>
+            </li>
+        </ul>
+    </div>
+</section>
+<section id="page-exam" class="content" style="display: none;">
+</section>
+<section id="page-results" class="content" style="display: none;">
+    <div>
+        <p class="title">Результаты теста</p>
+        <div class="circle">
+            <h3>
+                <span id="txt-score" class="score">0</span>
+                <span id="txt-max-score" class="max-score">3</span></h3>
+        </div>
+        <a href="#" id="btn-try-again" class="btn">Попробовать снова</a>
+        <a href="#" id="btn-share" class="btn btn-vk-ui">Поделиться</a>
+    </div>
+</section>
+<div class="wrapper-buttons-control">
+    <a href="#" id="btn-question-submit" class="btn btn-question btn-vk-ui" style="display: none">Отправить</a>
+</div>
+</body>
+
+<script src="https://vk.com/js/api/xd_connection.js?2" type="text/javascript"></script>
+<script src="app.js" type="text/javascript" defer></script>
+
+</html>
