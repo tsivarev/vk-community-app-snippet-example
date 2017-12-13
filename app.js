@@ -221,13 +221,13 @@ var app = {
                 VK.callMethod('shareBox',
                     'https://vk.com/app' + app.appId,
                     imageUrl,
-                    '');
+                    'VK community app snippet example');
             } else {
                 var appLink = 'https://vk.com/app' + app.appId + '_-' + app.groupId;
 
                 var requestData = {
                     'owner_id': sessionStorage.getItem('viewerId'),
-                    'message': '',
+                    'message': 'VK community app snippet example',
                     'attachments': imageUrl + ',' + appLink
                 };
 
