@@ -33,14 +33,16 @@ a {
 }
 
 input[type=radio] {
-    vertical-align: middle;
-    width: 15px;
-    height: 15px;
+    vertical-align: baseline;
+    width: 12px;
+    height: 12px;
+    padding: 0;
     margin: 0 5px;
 }
 
 label {
     display: block;
+    position: relative;
     width: 100%;
     padding: 7px 5px;
     font-weight: 400;
@@ -118,25 +120,25 @@ label:hover {
     right: 25px;
 }
 
-.wrapper-buttons-control{
+.wrapper-btn-control {
     margin: 0 0 50px 0;
 }
 
-.title{
+.title {
     font-size: 1.5em;
 }
 
-.score{
+.score {
     font-size: 3em;
     line-height: 100px;
 }
 
-.max-score::before{
+.max-score::before {
     content: '/\a0';
     display: inline-block;
 }
 
-.max-score{
+.max-score {
     display: block;
     position: absolute;
     bottom: 5px;
@@ -144,7 +146,7 @@ label:hover {
     color: #5c5c5c;
 }
 
-.circle{
+.circle {
     width: 100px;
     height: 100px;
     margin: 25px auto;

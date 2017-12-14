@@ -6,10 +6,10 @@ var app = {
         SUBMIT_QUESTION_BUTTON: document.getElementById('btn-question-submit'),
         TRY_AGAIN_BUTTON: document.getElementById('btn-try-again'),
         SHARE_BUTTON: document.getElementById('btn-share'),
-        HEADER_TITLE: document.getElementById('txt-title-header'),
-        EXAM_PROGRESS_TITLE: document.getElementById('txt-title-exam-progress'),
-        RESULT_SCORES: document.getElementById('txt-score'),
-        RESULT_MAX_SCORES: document.getElementById('txt-max-score')
+        HEADER_TITLE: document.getElementById('text-title-header'),
+        EXAM_PROGRESS_TITLE: document.getElementById('text-title-exam-progress'),
+        RESULT_SCORES: document.getElementById('text-score'),
+        RESULT_MAX_SCORES: document.getElementById('text-max-score')
     },
     PAGES: {
         INSTALL: document.getElementById('page-install'),
@@ -24,7 +24,7 @@ var app = {
         self: null,
         questionNumber: 0,
         maxQuestion: 0,
-        userAnswers: []
+        userScores: 0
     },
 
     btnSubmitHandlers: {
@@ -40,9 +40,10 @@ var app = {
             event.preventDefault();
 
             var answer = document.querySelector('input[type=radio]:checked');
-            app.examStatus.userAnswers.push(
-                answer == null ? null : answer.item
-            );
+            var rightAnswerId = app.examStatus.self.questions[app.examStatus.questionNumber - 1].rightAnswerId;
+            if (answer && answer.item.id === rightAnswerId) {
+                app.examStatus.userScores++;
+            }
         }
     },
 
@@ -50,9 +51,9 @@ var app = {
         app.examStatus.maxQuestion = exam.questions.length;
         app.examStatus.questionNumber = 0;
         app.examStatus.self = exam;
-        app.examStatus.userAnswers = [];
+        app.examStatus.userScores = 0;
 
-        app.ELEMENTS.HEADER_TITLE.innerHTML = 'Экзамен: ' + exam.title;
+        app.ELEMENTS.HEADER_TITLE.innerHTML = 'Тест: ' + exam.title;
         app.ELEMENTS.SUBMIT_QUESTION_BUTTON.style.display = 'inline-block';
         app.ELEMENTS.SUBMIT_QUESTION_BUTTON.innerHTML = 'Далее';
 
@@ -67,7 +68,6 @@ var app = {
         app.PAGES.EXAM.appendChild(
             app.renderQuestion(exam.questions[app.examStatus.questionNumber])
         );
-
         app.examStatus.questionNumber++;
 
         if (app.examStatus.questionNumber === app.examStatus.maxQuestion) {
@@ -80,18 +80,8 @@ var app = {
     },
 
     showResults: function () {
-        var userResult = 0;
-
-        app.examStatus.self.questions.forEach(function (question) {
-
-            if (question.correctAnswerId === app.examStatus.userAnswers.shift().id){
-                userResult++;
-            }
-        });
-
-        sessionStorage.setItem('testResult', userResult);
-        app.ELEMENTS.RESULT_SCORES.innerHTML = userResult;
-        app.ELEMENTS.RESULT_MAX_SCORES.innerHTML =  app.examStatus.maxQuestion;
+        app.ELEMENTS.RESULT_SCORES.innerHTML = app.examStatus.userScores;
+        app.ELEMENTS.RESULT_MAX_SCORES.innerHTML = app.examStatus.maxQuestion;
 
         app.ELEMENTS.SUBMIT_QUESTION_BUTTON.removeEventListener('click', app.btnSubmitHandlers.submitExamEvent);
         app.ELEMENTS.SUBMIT_QUESTION_BUTTON.removeEventListener('click', app.btnSubmitHandlers.countScore);
@@ -103,10 +93,9 @@ var app = {
         app.hideAll();
         page.style.display = 'block';
 
-        switch (page){
+        switch (page) {
             case app.PAGES.INSTALL:
-                app.ELEMENTS.EXAM_PROGRESS_TITLE.innerHTML = 'Вопрос <b>1</b> из <b>1</b>';
-                app.ELEMENTS.SUBMIT_QUESTION_BUTTON.style.display = 'inline-block';
+                app.ELEMENTS.INSTALL_APP_BUTTON.href = 'https://vk.com/add_community_app.php?aid=' + app.appId;
                 break;
 
             case app.PAGES.EXAM:
@@ -120,23 +109,12 @@ var app = {
                 app.ELEMENTS.EXAM_PROGRESS_TITLE.style.display = 'none';
                 break;
         }
-
-        if (page === app.PAGES.EXAM){
-
-        } else if (page === app.PAGES.INSTALL) {
-
-        }
     },
 
     hideAll: function () {
-        for(var page in app.PAGES){
+        for (var page in app.PAGES) {
             app.PAGES[page].style.display = 'none';
         }
-    },
-
-    showInstallPage: function (event) {
-        event.preventDefault();
-        window.open('https://vk.com/add_community_app.php?aid=' + app.appId, '_blank');
     },
 
     getUrlParameter: function (name) {
@@ -165,15 +143,15 @@ var app = {
         var choiceListElem = document.createElement('ul');
         choiceListElem.classList.add('question-choice');
 
-        question.answers.forEach(function (answer, i) {
+        question.answers.forEach(function (answer) {
             var choiceListItemElem = document.createElement('li');
 
             var choiceLabelElem = document.createElement('label');
-            choiceLabelElem.for = 'answer-' + i;
+            choiceLabelElem.for = question.id + '_' + answer.id;
 
             var choiceInputElem = document.createElement('input');
             choiceInputElem.type = 'radio';
-            choiceInputElem.id = 'answer-' + i;
+            choiceInputElem.id = question.id + '_' + answer.id;
             choiceInputElem.name = 'question-' + question.id;
             choiceInputElem.item = answer;
 
@@ -198,7 +176,6 @@ var app = {
         VK.init(null, null, app.API_VERSION);
 
         sessionStorage.setItem('viewerId', app.getUrlParameter('viewer_id'));
-        app.ELEMENTS.INSTALL_APP_BUTTON.addEventListener('click', app.showInstallPage);
         app.ELEMENTS.TRY_AGAIN_BUTTON.addEventListener('click', function (event) {
             event.preventDefault();
             app.show(app.PAGES.EXAM);
@@ -208,33 +185,30 @@ var app = {
             event.preventDefault();
 
             var viewerDevice = app.getUrlParameter('viewer_device');
-            var resultImages = [
-                '0-3.png',
-                '1-3.png',
-                '2-3.png',
-                '3-3.png'
+            var RESULT_IMAGES_ID = [
+                '456239021',
+                '456239022',
+                '456239023',
+                '456239024'
             ];
-            var imageUrl = location.origin + location.pathname + '/images/'
-                + resultImages[sessionStorage.getItem('testResult')];
+            var appLink = 'https://vk.com/app' + app.appId + '_-' + app.groupId;
+            var imageRawId = 'photo-' + app.groupId + '_' + RESULT_IMAGES_ID[app.examStatus.userScores];
 
             if (viewerDevice && viewerDevice === app.VIEWER_DEVICE_MOBILE) {
                 VK.callMethod('shareBox',
-                    'https://vk.com/app' + app.appId,
-                    imageUrl,
+                    appLink,
+                    'https://vk.com/' + imageRawId,
                     'VK community app snippet example');
             } else {
-                var appLink = 'https://vk.com/app' + app.appId + '_-' + app.groupId;
-
                 var requestData = {
                     'owner_id': sessionStorage.getItem('viewerId'),
-                    'message': 'VK community app snippet example',
-                    'attachments': imageUrl + ',' + appLink
+                    'attachments': imageRawId + ',' + appLink
                 };
 
                 VK.api('wall.post', requestData);
             }
         });
-        app.PAGES.EXAM.item = mathExam;
+        app.PAGES.EXAM.item = memExam;
 
         if (app.groupId == 0) {
             app.show(app.PAGES.INSTALL);
@@ -248,63 +222,59 @@ window.addEventListener('load', function () {
     app.init();
 });
 
-var mathExam = {
-    title: "Математика",
+var memExam = {
+    title: 'Мемология',
     questions: [
         {
             id: 1,
-            title: "Сколько будет 2х2?",
-            correctAnswerId: 1,
+            title: 'Знаете ли вы, кто придумал мемы?',
+            rightAnswerId: 1,
             answers: [
                 {
                     id: 1,
-                    value: "4"
+                    value: 'Да'
                 },
                 {
                     id: 2,
-                    value: "Кот"
+                    value: 'Нет'
                 }
             ]
         },
         {
             id: 2,
-            title: "Как можно найти корни квадратного уравнения?",
-            correctAnswerId: 1,
+            title: 'Скидывали ли вы мемы своим друзьям ВКонтакте?',
+            rightAnswerId: 1,
             answers: [
                 {
                     id: 1,
-                    value: "По теореме Виета"
+                    value: 'Да'
                 },
                 {
                     id: 2,
-                    value: "Умножить коэффициенты уравнения"
-                },
-                {
-                    id: 3,
-                    value: "Сложить коэффициенты уравнения"
+                    value: 'Нет'
                 }
             ]
         },
         {
             id: 3,
-            title: "Каким способом можно вычислить вторую производную функции f(x)=x*x ?",
-            correctAnswerId: null,
+            title: 'Где купить мемы?',
+            rightAnswerId: null,
             answers: [
                 {
                     id: 1,
-                    value: "Лечь на пол и заплакать"
+                    value: 'На базаре'
                 },
                 {
                     id: 2,
-                    value: "Поделить функцию на ноль"
+                    value: 'В пятерочке'
                 },
                 {
                     id: 3,
-                    value: "Спросить у мудреца под куполом офиса ВКонтакте"
+                    value: 'Из дают вместо со стикерами'
                 },
                 {
                     id: 4,
-                    value: "Взять производную от 2x и выбросить ее"
+                    value: 'У Бога мемов'
                 }
             ]
         }
