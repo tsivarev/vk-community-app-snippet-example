@@ -185,21 +185,31 @@ var app = {
             event.preventDefault();
 
             var viewerDevice = app.getUrlParameter('viewer_device');
-            var RESULT_IMAGES_ID = [
-                '456239021',
-                '456239022',
-                '456239023',
-                '456239024'
-            ];
             var appLink = 'https://vk.com/app' + app.appId + '_-' + app.groupId;
-            var imageRawId = 'photo-' + app.groupId + '_' + RESULT_IMAGES_ID[app.examStatus.userScores];
 
             if (viewerDevice && viewerDevice === app.VIEWER_DEVICE_MOBILE) {
+                var RESULT_IMAGE_NAMES = [
+                    '0-3.png',
+                    '1-3.png',
+                    '2-3.png',
+                    '3-3.png'
+                ];
+                var imageUrl = location.origin + location.pathname + '/images/'
+                    + RESULT_IMAGE_NAMES[app.examStatus.userScores];
+
                 VK.callMethod('shareBox',
                     appLink,
-                    'https://vk.com/' + imageRawId,
-                    'VK community app snippet example');
+                    imageUrl,
+                    app.PAGES.EXAM.item.title);
             } else {
+                var RESULT_IMAGE_IDS = [
+                    '456239021',
+                    '456239022',
+                    '456239023',
+                    '456239024'
+                ];
+                var imageRawId = 'photo-' + app.groupId + '_' + RESULT_IMAGE_IDS[app.examStatus.userScores];
+
                 var requestData = {
                     'owner_id': sessionStorage.getItem('viewerId'),
                     'attachments': imageRawId + ',' + appLink
