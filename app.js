@@ -20,7 +20,7 @@ var app = {
     appId: 0,
     groupId: 0,
 
-    examStatus: {
+    testStatus: {
         self: null,
         questionNumber: 0,
         maxQuestion: 0,
@@ -30,7 +30,7 @@ var app = {
     btnSubmitHandlers: {
         nextQuestionEvent: function (event) {
             event.preventDefault();
-            app.nextQuestion(app.examStatus.self);
+            app.nextQuestion(app.testStatus.self);
         },
         submitExamEvent: function (event) {
             event.preventDefault();
@@ -40,18 +40,18 @@ var app = {
             event.preventDefault();
 
             var answer = document.querySelector('input[type=radio]:checked');
-            var rightAnswerId = app.examStatus.self.questions[app.examStatus.questionNumber - 1].rightAnswerId;
+            var rightAnswerId = app.testStatus.self.questions[app.testStatus.questionNumber - 1].rightAnswerId;
             if (answer && answer.item.id === rightAnswerId) {
-                app.examStatus.userScores++;
+                app.testStatus.userScores++;
             }
         }
     },
 
     startExam: function startExam(exam) {
-        app.examStatus.maxQuestion = exam.questions.length;
-        app.examStatus.questionNumber = 0;
-        app.examStatus.self = exam;
-        app.examStatus.userScores = 0;
+        app.testStatus.maxQuestion = exam.questions.length;
+        app.testStatus.questionNumber = 0;
+        app.testStatus.self = exam;
+        app.testStatus.userScores = 0;
 
         app.ELEMENTS.HEADER_TITLE.innerHTML = 'Тест: ' + exam.title;
         app.ELEMENTS.SUBMIT_QUESTION_BUTTON.style.display = 'inline-block';
@@ -66,11 +66,11 @@ var app = {
     nextQuestion: function (exam) {
         app.PAGES.EXAM.innerHTML = '';
         app.PAGES.EXAM.appendChild(
-            app.renderQuestion(exam.questions[app.examStatus.questionNumber])
+            app.renderQuestion(exam.questions[app.testStatus.questionNumber])
         );
-        app.examStatus.questionNumber++;
+        app.testStatus.questionNumber++;
 
-        if (app.examStatus.questionNumber === app.examStatus.maxQuestion) {
+        if (app.testStatus.questionNumber === app.testStatus.maxQuestion) {
             var btnSubmit = app.ELEMENTS.SUBMIT_QUESTION_BUTTON;
             btnSubmit.innerHTML = 'Отправить';
             btnSubmit.removeEventListener('click', app.btnSubmitHandlers.nextQuestionEvent);
@@ -80,8 +80,8 @@ var app = {
     },
 
     showResults: function () {
-        app.ELEMENTS.RESULT_SCORES.innerHTML = app.examStatus.userScores;
-        app.ELEMENTS.RESULT_MAX_SCORES.innerHTML = app.examStatus.maxQuestion;
+        app.ELEMENTS.RESULT_SCORES.innerHTML = app.testStatus.userScores;
+        app.ELEMENTS.RESULT_MAX_SCORES.innerHTML = app.testStatus.maxQuestion;
 
         app.ELEMENTS.SUBMIT_QUESTION_BUTTON.removeEventListener('click', app.btnSubmitHandlers.submitExamEvent);
         app.ELEMENTS.SUBMIT_QUESTION_BUTTON.removeEventListener('click', app.btnSubmitHandlers.countScore);
@@ -128,7 +128,7 @@ var app = {
 
     updateCounters: function () {
         app.ELEMENTS.EXAM_PROGRESS_TITLE.innerHTML = 'Вопрос <b>'
-            + app.examStatus.questionNumber + '</b> из <b>' + app.examStatus.maxQuestion + '</b>'
+            + app.testStatus.questionNumber + '</b> из <b>' + app.testStatus.maxQuestion + '</b>'
     },
 
     renderQuestion: function (question) {
@@ -195,7 +195,7 @@ var app = {
                     '3-3.png'
                 ];
                 var imageUrl = location.origin + location.pathname + '/images/'
-                    + RESULT_IMAGE_NAMES[app.examStatus.userScores];
+                    + RESULT_IMAGE_NAMES[app.testStatus.userScores];
 
                 VK.callMethod('shareBox',
                     appLink,
@@ -208,7 +208,7 @@ var app = {
                     '456239023',
                     '456239024'
                 ];
-                var imageRawId = 'photo-' + app.groupId + '_' + RESULT_IMAGE_IDS[app.examStatus.userScores];
+                var imageRawId = 'photo-' + app.groupId + '_' + RESULT_IMAGE_IDS[app.testStatus.userScores];
 
                 var requestData = {
                     'owner_id': sessionStorage.getItem('viewerId'),
