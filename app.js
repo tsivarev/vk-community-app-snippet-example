@@ -16,6 +16,18 @@ var app = {
         EXAM: document.getElementById('page-exam'),
         RESULT: document.getElementById('page-results')
     },
+    RESULT_IMAGE_IDS: [
+        '456239021',
+        '456239022',
+        '456239023',
+        '456239024'
+    ],
+    RESULT_IMAGE_NAMES: [
+        '0-3.png',
+        '1-3.png',
+        '2-3.png',
+        '3-3.png'
+    ],
 
     appId: 0,
     groupId: 0,
@@ -145,20 +157,24 @@ var app = {
 
         question.answers.forEach(function (answer) {
             var choiceListItemElem = document.createElement('li');
-
             var choiceLabelElem = document.createElement('label');
-            choiceLabelElem.for = question.id + '_' + answer.id;
 
             var choiceInputElem = document.createElement('input');
             choiceInputElem.type = 'radio';
-            choiceInputElem.id = question.id + '_' + answer.id;
             choiceInputElem.name = 'question-' + question.id;
             choiceInputElem.item = answer;
+            choiceInputElem.classList.add('input-radio');
 
-            var choiceTextNode = document.createTextNode(answer.value);
+            var choiceCustomInputElem = document.createElement('span');
+            choiceCustomInputElem.classList.add('input-radio-custom');
+
+            var choiceTextElem = document.createElement('span');
+            choiceTextElem.classList.add('input-radio-text');
+            choiceTextElem.innerText = answer.value;
 
             choiceLabelElem.appendChild(choiceInputElem);
-            choiceLabelElem.appendChild(choiceTextNode);
+            choiceLabelElem.appendChild(choiceCustomInputElem);
+            choiceLabelElem.appendChild(choiceTextElem);
             choiceListItemElem.appendChild(choiceLabelElem);
             choiceListElem.appendChild(choiceListItemElem);
         });
@@ -173,7 +189,7 @@ var app = {
         app.appId = app.getUrlParameter('api_id');
         app.groupId = app.getUrlParameter('group_id');
 
-        VK.init(null, null, app.API_VERSION);
+        //VK.init(null, null, app.API_VERSION);
 
         sessionStorage.setItem('viewerId', app.getUrlParameter('viewer_id'));
         app.ELEMENTS.TRY_AGAIN_BUTTON.addEventListener('click', function (event) {
@@ -188,28 +204,12 @@ var app = {
             var appLink = 'https://vk.com/app' + app.appId + '_-' + app.groupId;
 
             if (viewerDevice && viewerDevice === app.VIEWER_DEVICE_MOBILE) {
-                var RESULT_IMAGE_NAMES = [
-                    '0-3.png',
-                    '1-3.png',
-                    '2-3.png',
-                    '3-3.png'
-                ];
                 var imageUrl = location.origin + location.pathname + '/images/'
-                    + RESULT_IMAGE_NAMES[app.testStatus.userScores];
+                    + app.RESULT_IMAGE_NAMES[app.testStatus.userScores];
 
-                VK.callMethod('shareBox',
-                    appLink,
-                    imageUrl,
-                    app.PAGES.EXAM.item.title);
+                VK.callMethod('shareBox', appLink, imageUrl, app.PAGES.EXAM.item.title);
             } else {
-                var RESULT_IMAGE_IDS = [
-                    '456239021',
-                    '456239022',
-                    '456239023',
-                    '456239024'
-                ];
-                var imageRawId = 'photo-' + app.groupId + '_' + RESULT_IMAGE_IDS[app.testStatus.userScores];
-
+                var imageRawId = 'photo-' + app.groupId + '_' + app.RESULT_IMAGE_IDS[app.testStatus.userScores];
                 var requestData = {
                     'owner_id': sessionStorage.getItem('viewerId'),
                     'attachments': imageRawId + ',' + appLink
@@ -280,7 +280,7 @@ var memExam = {
                 },
                 {
                     id: 3,
-                    value: 'Из дают вместо со стикерами'
+                    value: 'Их дают вместе со стикерами'
                 },
                 {
                     id: 4,
