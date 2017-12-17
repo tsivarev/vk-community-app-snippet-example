@@ -160,13 +160,15 @@ label:hover {
     height: 15px;
     border: 1px solid #688bb0;
     position: relative;
+    display: block;
+    float: left;
     margin: 0 5px;
 }
 
-.input-radio-custom,
-.input-radio-text {
+.input-radio-text,
+.input-radio-custom {
     display: inline-block;
-    vertical-align: middle;
+	vertical-align: middle;
 }
 
 .input-radio:checked + .input-radio-custom::before {
