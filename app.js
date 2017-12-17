@@ -212,6 +212,7 @@ var app = {
                 var imageRawId = 'photo-' + app.groupId + '_' + app.RESULT_IMAGE_IDS[app.testStatus.userScores];
                 var requestData = {
                     'owner_id': sessionStorage.getItem('viewerId'),
+                    'message': app.PAGES.EXAM.item.title,
                     'attachments': imageRawId + ',' + appLink
                 };
 
