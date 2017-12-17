@@ -32,10 +32,6 @@ a {
     color: #5e81a8;
 }
 
-input[type=radio] {
-    display: none;
-}
-
 label {
     display: block;
     position: relative;
@@ -155,32 +151,36 @@ label:hover {
     color: #f1f1f1;
 }
 
+.input-radio{
+    display: none;
+}
+
 .input-radio-custom {
-	width: 15px;
-	height: 15px;
-	border: 1px solid #688bb0;
-	position: relative;
+    width: 15px;
+    height: 15px;
+    border: 1px solid #688bb0;
+    position: relative;
     margin: 0 5px;
 }
 
 .input-radio-custom,
 .input-radio-text {
-	display: inline-block;
-	vertical-align: middle;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .input-radio:checked + .input-radio-custom::before {
-	content: "";
-	display: block;
-	position: absolute;
-	top: 4px;
-	right: 4px;
-	bottom: 4px;
-	left: 4px;
-	background: #688bb0;
+    content: "";
+    display: block;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    bottom: 4px;
+    left: 4px;
+    background: #688bb0;
 }
 
 .input-radio-custom,
 .input-radio:checked + .input-radio-custom::before {
-	border-radius: 50%;
+    border-radius: 50%;
 }

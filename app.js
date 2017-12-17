@@ -189,7 +189,7 @@ var app = {
         app.appId = app.getUrlParameter('api_id');
         app.groupId = app.getUrlParameter('group_id');
 
-        //VK.init(null, null, app.API_VERSION);
+        VK.init(null, null, app.API_VERSION);
 
         sessionStorage.setItem('viewerId', app.getUrlParameter('viewer_id'));
         app.ELEMENTS.TRY_AGAIN_BUTTON.addEventListener('click', function (event) {
