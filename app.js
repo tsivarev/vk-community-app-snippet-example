@@ -1,22 +1,6 @@
 var app = {
     API_VERSION: '5.69',
     VIEWER_DEVICE_MOBILE: 'mobile',
-    ELEMENTS: {
-        INSTALL_APP_BUTTON: document.getElementById('btn-show-install-page'),
-        SUBMIT_QUESTION_BUTTON: document.getElementById('btn-question-submit'),
-        TRY_AGAIN_BUTTON: document.getElementById('btn-try-again'),
-        SHARE_BUTTON: document.getElementById('btn-share'),
-        SHARE_WRAPPER: document.getElementById('wrapper-sharing'),
-        HEADER_TITLE: document.getElementById('text-title-header'),
-        EXAM_PROGRESS_TITLE: document.getElementById('text-title-test-progress'),
-        RESULT_SCORES: document.getElementById('text-score'),
-        RESULT_MAX_SCORES: document.getElementById('text-max-score')
-    },
-    PAGES: {
-        INSTALL: document.getElementById('page-install'),
-        EXAM: document.getElementById('page-test'),
-        RESULT: document.getElementById('page-results')
-    },
     RESULT_IMAGE_NAMES: [
         '0-3.png',
         '1-3.png',
@@ -24,6 +8,22 @@ var app = {
         '3-3.png'
     ],
 
+    elements: {
+        installAppButton: document.getElementById('btn-show-install-page'),
+        submitQuestionButton: document.getElementById('btn-question-submit'),
+        tryAgainButton: document.getElementById('btn-try-again'),
+        shareButton: document.getElementById('btn-share'),
+        shareWrapper: document.getElementById('wrapper-sharing'),
+        headerTitle: document.getElementById('text-title-header'),
+        examProgressTitle: document.getElementById('text-title-test-progress'),
+        resultScores: document.getElementById('text-score'),
+        resultMaxScores: document.getElementById('text-max-score')
+    },
+    pages: {
+        install: document.getElementById('page-install'),
+        exam: document.getElementById('page-test'),
+        result: document.getElementById('page-results')
+    },
     appId: 0,
     groupId: 0,
     viewerDevice: null,
@@ -37,32 +37,34 @@ var app = {
         userScores: 0
     },
 
-    btnHandlers: {
-        nextQuestionEvent: function (event) {
-            event.preventDefault();
-            app.nextQuestion(app.testStatus.self);
-        },
-        submitTestEvent: function (event) {
-            event.preventDefault();
-            app.showResults();
-        },
-        countScore: function (event) {
-            event.preventDefault();
+    nextQuestionEventListener: function (event) {
+        event.preventDefault();
+        app.nextQuestion(app.testStatus.self);
+    },
 
-            var answer = document.querySelector('input[type=radio]:checked');
-            var rightAnswerId = app.testStatus.self.questions[app.testStatus.questionNumber - 1].rightAnswerId;
-            if (answer && answer.item.id === rightAnswerId) {
-                app.testStatus.userScores++;
-            }
-        },
-        tryAgainTest: function (event) {
-            event.preventDefault();
-            app.show(app.PAGES.EXAM);
-        },
-        shareMobile: function (event) {
-            event.preventDefault();
-            VK.callMethod('shareBox', app.appLink, app.imageUrl, app.PAGES.EXAM.item.title);
+    submitTestEventListener: function (event) {
+        event.preventDefault();
+        app.showResults();
+    },
+
+    scoreCounterListener: function (event) {
+        event.preventDefault();
+
+        var answer = document.querySelector('input[type=radio]:checked');
+        var rightAnswerId = app.testStatus.self.questions[app.testStatus.questionNumber - 1].rightAnswerId;
+        if (answer && answer.item.id === rightAnswerId) {
+            app.testStatus.userScores++;
         }
+    },
+
+    tryAgainTestEventListener: function (event) {
+        event.preventDefault();
+        app.show(app.pages.exam);
+    },
+    
+    shareMobileEventListener: function (event) {
+        event.preventDefault();
+        VK.callMethod('shareBox', app.appLink, app.imageUrl, app.pages.exam.item.title);
     },
 
     startTest: function (test) {
@@ -71,40 +73,40 @@ var app = {
         app.testStatus.self = test;
         app.testStatus.userScores = 0;
 
-        app.ELEMENTS.HEADER_TITLE.innerHTML = 'Тест: ' + test.title;
-        app.ELEMENTS.SUBMIT_QUESTION_BUTTON.style.display = 'inline-block';
-        app.ELEMENTS.SUBMIT_QUESTION_BUTTON.innerHTML = 'Далее';
+        app.elements.headerTitle.innerHTML = 'Тест: ' + test.title;
+        app.elements.submitQuestionButton.style.display = 'inline-block';
+        app.elements.submitQuestionButton.innerHTML = 'Далее';
 
-        app.ELEMENTS.SUBMIT_QUESTION_BUTTON.addEventListener('click', app.btnHandlers.countScore);
-        app.ELEMENTS.SUBMIT_QUESTION_BUTTON.addEventListener('click', app.btnHandlers.nextQuestionEvent);
+        app.elements.submitQuestionButton.addEventListener('click', app.scoreCounterListener);
+        app.elements.submitQuestionButton.addEventListener('click', app.nextQuestionEventListener);
 
         app.nextQuestion(test);
     },
 
     nextQuestion: function (test) {
-        app.PAGES.EXAM.innerHTML = '';
-        app.PAGES.EXAM.appendChild(
+        app.pages.exam.innerHTML = '';
+        app.pages.exam.appendChild(
             app.renderQuestion(test.questions[app.testStatus.questionNumber])
         );
         app.testStatus.questionNumber++;
 
         if (app.testStatus.questionNumber === app.testStatus.maxQuestion) {
-            var btnSubmit = app.ELEMENTS.SUBMIT_QUESTION_BUTTON;
+            var btnSubmit = app.elements.submitQuestionButton;
             btnSubmit.innerHTML = 'Отправить';
-            btnSubmit.removeEventListener('click', app.btnHandlers.nextQuestionEvent);
-            btnSubmit.addEventListener('click', app.btnHandlers.submitTestEvent);
+            btnSubmit.removeEventListener('click', app.nextQuestionEventListener);
+            btnSubmit.addEventListener('click', app.submitTestEventListener);
         }
         app.updateCounters();
     },
 
     showResults: function () {
-        app.ELEMENTS.RESULT_SCORES.innerHTML = app.testStatus.userScores;
-        app.ELEMENTS.RESULT_MAX_SCORES.innerHTML = app.testStatus.maxQuestion;
+        app.elements.resultScores.innerHTML = app.testStatus.userScores;
+        app.elements.resultMaxScores.innerHTML = app.testStatus.maxQuestion;
 
-        app.ELEMENTS.SUBMIT_QUESTION_BUTTON.removeEventListener('click', app.btnHandlers.submitTestEvent);
-        app.ELEMENTS.SUBMIT_QUESTION_BUTTON.removeEventListener('click', app.btnHandlers.countScore);
+        app.elements.submitQuestionButton.removeEventListener('click', app.submitTestEventListener);
+        app.elements.submitQuestionButton.removeEventListener('click', app.scoreCounterListener);
 
-        app.show(app.PAGES.RESULT);
+        app.show(app.pages.result);
     },
 
     show: function (page) {
@@ -112,34 +114,34 @@ var app = {
         page.style.display = 'block';
 
         switch (page) {
-            case app.PAGES.INSTALL:
-                app.ELEMENTS.INSTALL_APP_BUTTON.href = 'https://vk.com/add_community_app.php?aid=' + app.appId;
+            case app.pages.install:
+                app.elements.installAppButton.href = 'https://vk.com/add_community_app.php?aid=' + app.appId;
                 break;
 
-            case app.PAGES.EXAM:
+            case app.pages.exam:
                 app.startTest(page.item);
-                app.ELEMENTS.EXAM_PROGRESS_TITLE.style.display = 'inline-block';
-                app.ELEMENTS.SUBMIT_QUESTION_BUTTON.style.display = 'inline-block';
+                app.elements.examProgressTitle.style.display = 'inline-block';
+                app.elements.submitQuestionButton.style.display = 'inline-block';
                 break;
 
-            case app.PAGES.RESULT:
-                app.ELEMENTS.SUBMIT_QUESTION_BUTTON.style.display = 'none';
-                app.ELEMENTS.EXAM_PROGRESS_TITLE.style.display = 'none';
-                app.ELEMENTS.TRY_AGAIN_BUTTON.addEventListener('click', app.btnHandlers.tryAgainTest);
+            case app.pages.result:
+                app.elements.submitQuestionButton.style.display = 'none';
+                app.elements.examProgressTitle.style.display = 'none';
+                app.elements.tryAgainButton.addEventListener('click', app.tryAgainTestEventListener);
                 
                 app.imageUrl = location.origin + location.pathname + 'images/'
                     + app.RESULT_IMAGE_NAMES[app.testStatus.userScores];
 
                 if (app.viewerDevice && app.viewerDevice === app.VIEWER_DEVICE_MOBILE) {
-                    app.ELEMENTS.SHARE_BUTTON.addEventListener('click', app.btnHandlers.shareMobile);
+                    app.elements.shareButton.addEventListener('click', app.shareMobileEventListener);
                 } else {
                     var shareOption = {
                         url: app.appLink,
-                        title: app.PAGES.EXAM.item.title,
+                        title: app.pages.exam.item.title,
                         image: app.imageUrl
                     };
 
-                    app.ELEMENTS.SHARE_WRAPPER.innerHTML = VK.Share.button(shareOption, {
+                    app.elements.shareWrapper.innerHTML = VK.Share.button(shareOption, {
                         type: 'button_nocount',
                         text: 'Поделиться'
                     });
@@ -149,8 +151,8 @@ var app = {
     },
 
     hideAll: function () {
-        for (var page in app.PAGES) {
-            app.hide(app.PAGES[page]);
+        for (var page in app.pages) {
+            app.hide(app.pages[page]);
         }
     },
 
@@ -158,11 +160,11 @@ var app = {
         page.style.display = 'none';
 
         switch (page) {
-            case app.PAGES.RESULT:
-                app.ELEMENTS.TRY_AGAIN_BUTTON.removeEventListener('click', app.btnHandlers.tryAgainTest);
+            case app.pages.result:
+                app.elements.tryAgainButton.removeEventListener('click', app.tryAgainTestEventListener);
 
                 if (app.viewerDevice && app.viewerDevice === app.VIEWER_DEVICE_MOBILE) {
-                    app.ELEMENTS.SHARE_BUTTON.removeEventListener('click', app.btnHandlers.shareMobile);
+                    app.elements.shareButton.removeEventListener('click', app.shareMobileEventListener);
                 }
                 break;
         }
@@ -178,7 +180,7 @@ var app = {
     },
 
     updateCounters: function () {
-        app.ELEMENTS.EXAM_PROGRESS_TITLE.innerHTML = 'Вопрос <b>'
+        app.elements.examProgressTitle.innerHTML = 'Вопрос <b>'
             + app.testStatus.questionNumber + '</b> из <b>' + app.testStatus.maxQuestion + '</b>'
     },
 
@@ -233,12 +235,12 @@ var app = {
         VK.init(null, null, app.API_VERSION);
 
         sessionStorage.setItem('viewerId', app.getUrlParameter('viewer_id'));
-        app.PAGES.EXAM.item = memologyTest;
+        app.pages.exam.item = testData;
 
         if (app.groupId == 0) {
-            app.show(app.PAGES.INSTALL);
+            app.show(app.pages.install);
         } else {
-            app.show(app.PAGES.EXAM);
+            app.show(app.pages.exam);
         }
     }
 };
@@ -247,7 +249,7 @@ window.addEventListener('load', function () {
     app.init();
 });
 
-var memologyTest = {
+var testData = {
     title: 'Мемология',
     questions: [
         {
