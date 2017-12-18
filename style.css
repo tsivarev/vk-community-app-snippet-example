@@ -79,7 +79,7 @@ label:hover {
     cursor: pointer;
     display: inline-block;
     line-height: 16px;
-    margin:  5px 10px;
+    margin: 5px 10px;
 }
 
 .btn-vk-ui:active, .btn-vk-ui:hover {
@@ -117,6 +117,12 @@ label:hover {
     margin: 0 0 50px 0;
 }
 
+.wrapper-share {
+    margin: 5px auto;
+    text-align: center;
+    text-align: -webkit-center;
+}
+
 .title {
     font-size: 1.5em;
 }
@@ -151,7 +157,7 @@ label:hover {
     color: #f1f1f1;
 }
 
-.input-radio{
+.input-radio {
     display: none;
 }
 
@@ -162,13 +168,13 @@ label:hover {
     position: relative;
     display: block;
     float: left;
-    margin: 0 5px;
+    margin: 2px 5px;
 }
 
 .input-radio-text,
 .input-radio-custom {
     display: inline-block;
-	vertical-align: middle;
+    vertical-align: middle;
 }
 
 .input-radio:checked + .input-radio-custom::before {

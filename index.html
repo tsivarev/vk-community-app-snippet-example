@@ -15,7 +15,7 @@
 <body>
 <div class="header">
     <h2 class="header-title" id="text-title-header">Тест</h2>
-    <p class="progress" id="text-title-exam-progress" style="display:none;"></p>
+    <p class="progress" id="text-title-test-progress" style="display:none;"></p>
 </div>
 <section id="page-install" class="content" style="display: none;">
     <div>
@@ -23,7 +23,7 @@
         <a href="#" id="btn-show-install-page" target="_blank" class="btn btn-vk-ui">Установить</a>
     </div>
 </section>
-<section id="page-exam" class="content" style="display: none;">
+<section id="page-test" class="content" style="display: none;">
 </section>
 <section id="page-results" class="content" style="display: none;">
     <div>
@@ -33,7 +33,9 @@
             <span id="text-max-score" class="max-score"></span>
         </div>
         <a href="#" id="btn-try-again" class="btn">Попробовать снова</a>
-        <a href="#" id="btn-share" class="btn btn-vk-ui">Поделиться</a>
+        <div id="wrapper-sharing" class="wrapper-share">
+            <a href="#" id="btn-share" class="btn btn-vk-ui">Поделиться</a>
+        </div>
     </div>
 </section>
 <div class="wrapper-btn-control">
@@ -42,6 +44,7 @@
 </body>
 
 <script src="https://vk.com/js/api/xd_connection.js?2" type="text/javascript"></script>
+<script src="https://vk.com/js/api/share.js?93" type="text/javascript"></script>
 <script src="app.js" type="text/javascript" defer></script>
 
 </html>

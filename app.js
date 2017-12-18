@@ -6,22 +6,17 @@ var app = {
         SUBMIT_QUESTION_BUTTON: document.getElementById('btn-question-submit'),
         TRY_AGAIN_BUTTON: document.getElementById('btn-try-again'),
         SHARE_BUTTON: document.getElementById('btn-share'),
+        SHARE_WRAPPER: document.getElementById('wrapper-sharing'),
         HEADER_TITLE: document.getElementById('text-title-header'),
-        EXAM_PROGRESS_TITLE: document.getElementById('text-title-exam-progress'),
+        EXAM_PROGRESS_TITLE: document.getElementById('text-title-test-progress'),
         RESULT_SCORES: document.getElementById('text-score'),
         RESULT_MAX_SCORES: document.getElementById('text-max-score')
     },
     PAGES: {
         INSTALL: document.getElementById('page-install'),
-        EXAM: document.getElementById('page-exam'),
+        EXAM: document.getElementById('page-test'),
         RESULT: document.getElementById('page-results')
     },
-    RESULT_IMAGE_IDS: [
-        '456239021',
-        '456239022',
-        '456239023',
-        '456239024'
-    ],
     RESULT_IMAGE_NAMES: [
         '0-3.png',
         '1-3.png',
@@ -31,6 +26,9 @@ var app = {
 
     appId: 0,
     groupId: 0,
+    viewerDevice: null,
+    appLink: null,
+    imageUrl: null,
 
     testStatus: {
         self: null,
@@ -39,12 +37,12 @@ var app = {
         userScores: 0
     },
 
-    btnSubmitHandlers: {
+    btnHandlers: {
         nextQuestionEvent: function (event) {
             event.preventDefault();
             app.nextQuestion(app.testStatus.self);
         },
-        submitExamEvent: function (event) {
+        submitTestEvent: function (event) {
             event.preventDefault();
             app.showResults();
         },
@@ -56,37 +54,45 @@ var app = {
             if (answer && answer.item.id === rightAnswerId) {
                 app.testStatus.userScores++;
             }
+        },
+        tryAgainTest: function (event) {
+            event.preventDefault();
+            app.show(app.PAGES.EXAM);
+        },
+        shareMobile: function (event) {
+            event.preventDefault();
+            VK.callMethod('shareBox', app.appLink, app.imageUrl, app.PAGES.EXAM.item.title);
         }
     },
 
-    startExam: function startExam(exam) {
-        app.testStatus.maxQuestion = exam.questions.length;
+    startTest: function (test) {
+        app.testStatus.maxQuestion = test.questions.length;
         app.testStatus.questionNumber = 0;
-        app.testStatus.self = exam;
+        app.testStatus.self = test;
         app.testStatus.userScores = 0;
 
-        app.ELEMENTS.HEADER_TITLE.innerHTML = 'Тест: ' + exam.title;
+        app.ELEMENTS.HEADER_TITLE.innerHTML = 'Тест: ' + test.title;
         app.ELEMENTS.SUBMIT_QUESTION_BUTTON.style.display = 'inline-block';
         app.ELEMENTS.SUBMIT_QUESTION_BUTTON.innerHTML = 'Далее';
 
-        app.ELEMENTS.SUBMIT_QUESTION_BUTTON.addEventListener('click', app.btnSubmitHandlers.countScore);
-        app.ELEMENTS.SUBMIT_QUESTION_BUTTON.addEventListener('click', app.btnSubmitHandlers.nextQuestionEvent);
+        app.ELEMENTS.SUBMIT_QUESTION_BUTTON.addEventListener('click', app.btnHandlers.countScore);
+        app.ELEMENTS.SUBMIT_QUESTION_BUTTON.addEventListener('click', app.btnHandlers.nextQuestionEvent);
 
-        app.nextQuestion(exam);
+        app.nextQuestion(test);
     },
 
-    nextQuestion: function (exam) {
+    nextQuestion: function (test) {
         app.PAGES.EXAM.innerHTML = '';
         app.PAGES.EXAM.appendChild(
-            app.renderQuestion(exam.questions[app.testStatus.questionNumber])
+            app.renderQuestion(test.questions[app.testStatus.questionNumber])
         );
         app.testStatus.questionNumber++;
 
         if (app.testStatus.questionNumber === app.testStatus.maxQuestion) {
             var btnSubmit = app.ELEMENTS.SUBMIT_QUESTION_BUTTON;
             btnSubmit.innerHTML = 'Отправить';
-            btnSubmit.removeEventListener('click', app.btnSubmitHandlers.nextQuestionEvent);
-            btnSubmit.addEventListener('click', app.btnSubmitHandlers.submitExamEvent);
+            btnSubmit.removeEventListener('click', app.btnHandlers.nextQuestionEvent);
+            btnSubmit.addEventListener('click', app.btnHandlers.submitTestEvent);
         }
         app.updateCounters();
     },
@@ -95,8 +101,8 @@ var app = {
         app.ELEMENTS.RESULT_SCORES.innerHTML = app.testStatus.userScores;
         app.ELEMENTS.RESULT_MAX_SCORES.innerHTML = app.testStatus.maxQuestion;
 
-        app.ELEMENTS.SUBMIT_QUESTION_BUTTON.removeEventListener('click', app.btnSubmitHandlers.submitExamEvent);
-        app.ELEMENTS.SUBMIT_QUESTION_BUTTON.removeEventListener('click', app.btnSubmitHandlers.countScore);
+        app.ELEMENTS.SUBMIT_QUESTION_BUTTON.removeEventListener('click', app.btnHandlers.submitTestEvent);
+        app.ELEMENTS.SUBMIT_QUESTION_BUTTON.removeEventListener('click', app.btnHandlers.countScore);
 
         app.show(app.PAGES.RESULT);
     },
@@ -111,7 +117,7 @@ var app = {
                 break;
 
             case app.PAGES.EXAM:
-                app.startExam(page.item);
+                app.startTest(page.item);
                 app.ELEMENTS.EXAM_PROGRESS_TITLE.style.display = 'inline-block';
                 app.ELEMENTS.SUBMIT_QUESTION_BUTTON.style.display = 'inline-block';
                 break;
@@ -119,13 +125,45 @@ var app = {
             case app.PAGES.RESULT:
                 app.ELEMENTS.SUBMIT_QUESTION_BUTTON.style.display = 'none';
                 app.ELEMENTS.EXAM_PROGRESS_TITLE.style.display = 'none';
+                app.ELEMENTS.TRY_AGAIN_BUTTON.addEventListener('click', app.btnHandlers.tryAgainTest);
+                app.imageUrl = location.origin + location.pathname + '/images/'
+                    + app.RESULT_IMAGE_NAMES[app.testStatus.userScores];
+
+                if (app.viewerDevice && app.viewerDevice === app.VIEWER_DEVICE_MOBILE) {
+                    app.ELEMENTS.SHARE_BUTTON.addEventListener('click', app.btnHandlers.shareMobile);
+                } else {
+                    var shareOption = {
+                        url: app.appLink,
+                        title: app.PAGES.EXAM.item.title,
+                        image: app.imageUrl
+                    };
+
+                    app.ELEMENTS.SHARE_WRAPPER.innerHTML = VK.Share.button(shareOption, {
+                        type: 'button_nocount',
+                        text: 'Поделиться'
+                    });
+                }
                 break;
         }
     },
 
     hideAll: function () {
         for (var page in app.PAGES) {
-            app.PAGES[page].style.display = 'none';
+            app.hide(app.PAGES[page]);
+        }
+    },
+
+    hide: function (page) {
+        page.style.display = 'none';
+
+        switch (page) {
+            case app.PAGES.RESULT:
+                app.ELEMENTS.TRY_AGAIN_BUTTON.removeEventListener('click', app.btnHandlers.tryAgainTest);
+
+                if (app.viewerDevice && app.viewerDevice === app.VIEWER_DEVICE_MOBILE) {
+                    app.ELEMENTS.SHARE_BUTTON.removeEventListener('click', app.btnHandlers.shareMobile);
+                }
+                break;
         }
     },
 
@@ -188,38 +226,14 @@ var app = {
     init: function () {
         app.appId = app.getUrlParameter('api_id');
         app.groupId = app.getUrlParameter('group_id');
+        app.viewerDevice = app.getUrlParameter('viewer_device');
+
+        app.appLink = 'https://vk.com/app' + app.appId + '_-' + app.groupId;
 
         VK.init(null, null, app.API_VERSION);
 
         sessionStorage.setItem('viewerId', app.getUrlParameter('viewer_id'));
-        app.ELEMENTS.TRY_AGAIN_BUTTON.addEventListener('click', function (event) {
-            event.preventDefault();
-            app.show(app.PAGES.EXAM);
-        });
-
-        app.ELEMENTS.SHARE_BUTTON.addEventListener('click', function (event) {
-            event.preventDefault();
-
-            var viewerDevice = app.getUrlParameter('viewer_device');
-            var appLink = 'https://vk.com/app' + app.appId + '_-' + app.groupId;
-
-            if (viewerDevice && viewerDevice === app.VIEWER_DEVICE_MOBILE) {
-                var imageUrl = location.origin + location.pathname + '/images/'
-                    + app.RESULT_IMAGE_NAMES[app.testStatus.userScores];
-
-                VK.callMethod('shareBox', appLink, imageUrl, app.PAGES.EXAM.item.title);
-            } else {
-                var imageRawId = 'photo-' + app.groupId + '_' + app.RESULT_IMAGE_IDS[app.testStatus.userScores];
-                var requestData = {
-                    'owner_id': sessionStorage.getItem('viewerId'),
-                    'message': app.PAGES.EXAM.item.title,
-                    'attachments': imageRawId + ',' + appLink
-                };
-
-                VK.api('wall.post', requestData);
-            }
-        });
-        app.PAGES.EXAM.item = memExam;
+        app.PAGES.EXAM.item = memologyTest;
 
         if (app.groupId == 0) {
             app.show(app.PAGES.INSTALL);
@@ -233,7 +247,7 @@ window.addEventListener('load', function () {
     app.init();
 });
 
-var memExam = {
+var memologyTest = {
     title: 'Мемология',
     questions: [
         {
