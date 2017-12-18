@@ -126,8 +126,10 @@ var app = {
                 app.ELEMENTS.SUBMIT_QUESTION_BUTTON.style.display = 'none';
                 app.ELEMENTS.EXAM_PROGRESS_TITLE.style.display = 'none';
                 app.ELEMENTS.TRY_AGAIN_BUTTON.addEventListener('click', app.btnHandlers.tryAgainTest);
+
                 app.imageUrl = location.origin + location.pathname + '/images/'
                     + app.RESULT_IMAGE_NAMES[app.testStatus.userScores];
+                VK.api('pages.clearCache', {url: app.imageUrl}, function (data) {});
 
                 if (app.viewerDevice && app.viewerDevice === app.VIEWER_DEVICE_MOBILE) {
                     app.ELEMENTS.SHARE_BUTTON.addEventListener('click', app.btnHandlers.shareMobile);
