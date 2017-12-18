@@ -171,10 +171,9 @@ label:hover {
     margin: 2px 5px;
 }
 
-.input-radio-text,
-.input-radio-custom {
+.input-radio-text {
     display: inline-block;
-    vertical-align: middle;
+    vertical-align: text-top;
 }
 
 .input-radio:checked + .input-radio-custom::before {

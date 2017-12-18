@@ -227,7 +227,6 @@ var app = {
         app.appId = app.getUrlParameter('api_id');
         app.groupId = app.getUrlParameter('group_id');
         app.viewerDevice = app.getUrlParameter('viewer_device');
-
         app.appLink = 'https://vk.com/app' + app.appId + '_-' + app.groupId;
 
         VK.init(null, null, app.API_VERSION);
