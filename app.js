@@ -52,7 +52,7 @@ var app = {
 
         var answer = document.querySelector('input[type=radio]:checked');
         var rightAnswerId = app.testStatus.self.questions[app.testStatus.questionNumber - 1].rightAnswerId;
-        if (answer && answer.item.id === rightAnswerId) {
+        if (answer && answer.getAttribute('answer-id') == rightAnswerId) {
             app.testStatus.userScores++;
         }
     },
@@ -61,7 +61,7 @@ var app = {
         event.preventDefault();
         app.show(app.pages.exam);
     },
-    
+
     shareMobileEventListener: function (event) {
         event.preventDefault();
         VK.callMethod('shareBox', app.appLink, app.imageUrl, app.pages.exam.item.title);
@@ -74,7 +74,7 @@ var app = {
         app.testStatus.userScores = 0;
 
         app.elements.headerTitle.innerHTML = 'Тест: ' + test.title;
-        app.elements.submitQuestionButton.style.display = 'inline-block';
+        app.elements.submitQuestionButton.classList.remove('hidden');
         app.elements.submitQuestionButton.innerHTML = 'Далее';
 
         app.elements.submitQuestionButton.addEventListener('click', app.scoreCounterListener);
@@ -84,10 +84,7 @@ var app = {
     },
 
     nextQuestion: function (test) {
-        app.pages.exam.innerHTML = '';
-        app.pages.exam.appendChild(
-            app.renderQuestion(test.questions[app.testStatus.questionNumber])
-        );
+        app.pages.exam.innerHTML = app.renderQuestion(test.questions[app.testStatus.questionNumber]);
         app.testStatus.questionNumber++;
 
         if (app.testStatus.questionNumber === app.testStatus.maxQuestion) {
@@ -111,7 +108,7 @@ var app = {
 
     show: function (page) {
         app.hideAll();
-        page.style.display = 'block';
+        page.classList.remove('hidden');
 
         switch (page) {
             case app.pages.install:
@@ -120,15 +117,15 @@ var app = {
 
             case app.pages.exam:
                 app.startTest(page.item);
-                app.elements.examProgressTitle.style.display = 'inline-block';
-                app.elements.submitQuestionButton.style.display = 'inline-block';
+                app.elements.examProgressTitle.classList.remove('hidden');
+                app.elements.submitQuestionButton.classList.remove('hidden');
                 break;
 
             case app.pages.result:
-                app.elements.submitQuestionButton.style.display = 'none';
-                app.elements.examProgressTitle.style.display = 'none';
+                app.elements.submitQuestionButton.classList.add('hidden');
+                app.elements.examProgressTitle.classList.add('hidden');
                 app.elements.tryAgainButton.addEventListener('click', app.tryAgainTestEventListener);
-                
+
                 app.imageUrl = location.origin + location.pathname + 'images/'
                     + app.RESULT_IMAGE_NAMES[app.testStatus.userScores];
 
@@ -157,7 +154,7 @@ var app = {
     },
 
     hide: function (page) {
-        page.style.display = 'none';
+        page.classList.add('hidden');
 
         switch (page) {
             case app.pages.result:
@@ -185,45 +182,26 @@ var app = {
     },
 
     renderQuestion: function (question) {
-        var mainContainerElem = document.createElement('div');
-        mainContainerElem.classList.add('question');
-        mainContainerElem.id = 'question-' + question.id;
-
-        var questionTitleElem = document.createElement('h3');
-        questionTitleElem.classList.add('question-title');
-        questionTitleElem.innerHTML = question.title;
-
-        var choiceListElem = document.createElement('ul');
-        choiceListElem.classList.add('question-choice');
+        var elementsOfAnswersList = '';
 
         question.answers.forEach(function (answer) {
-            var choiceListItemElem = document.createElement('li');
-            var choiceLabelElem = document.createElement('label');
-
-            var choiceInputElem = document.createElement('input');
-            choiceInputElem.type = 'radio';
-            choiceInputElem.name = 'question-' + question.id;
-            choiceInputElem.item = answer;
-            choiceInputElem.classList.add('input-radio');
-
-            var choiceCustomInputElem = document.createElement('span');
-            choiceCustomInputElem.classList.add('input-radio-custom');
-
-            var choiceTextElem = document.createElement('span');
-            choiceTextElem.classList.add('input-radio-text');
-            choiceTextElem.innerText = answer.value;
-
-            choiceLabelElem.appendChild(choiceInputElem);
-            choiceLabelElem.appendChild(choiceCustomInputElem);
-            choiceLabelElem.appendChild(choiceTextElem);
-            choiceListItemElem.appendChild(choiceLabelElem);
-            choiceListElem.appendChild(choiceListItemElem);
+            elementsOfAnswersList +=
+                '<li>' +
+                    '<label>' +
+                        '<input type="radio" name="question-' + question.id + '" answer-id="' + answer.id + '" class="input-radio">' +
+                        '<span class="input-radio-custom"></span>' +
+                        '<span class="input-radio-text">' + answer.value + '</span>' +
+                    '</label>' +
+                '</li>';
         });
 
-        mainContainerElem.appendChild(questionTitleElem);
-        mainContainerElem.appendChild(choiceListElem);
+        var questionContainer =
+            '<div class="question" id="question-' + question.id + '">' +
+                '<h3>' + question.title + '</h3>' +
+                '<ul class="question-choice">' + elementsOfAnswersList + '</ul>' +
+            '</div>';
 
-        return mainContainerElem;
+        return questionContainer;
     },
 
     init: function () {

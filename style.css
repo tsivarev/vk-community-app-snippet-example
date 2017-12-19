@@ -150,11 +150,10 @@ label:hover {
     height: 100px;
     margin: 25px auto;
     position: relative;
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
-    border-radius: 50%;
     background-color: #5e81a8;
     color: #f1f1f1;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
 }
 
 .input-radio {
@@ -190,4 +189,8 @@ label:hover {
 .input-radio-custom,
 .input-radio:checked + .input-radio-custom::before {
     border-radius: 50%;
+}
+
+.hidden {
+    display: none;
 }
