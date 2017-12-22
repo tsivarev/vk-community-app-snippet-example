@@ -119,8 +119,8 @@ label:hover {
 
 .wrapper-share {
     margin: 5px auto;
+    display: inline-block;
     text-align: center;
-    text-align: -webkit-center;
 }
 
 .title {
