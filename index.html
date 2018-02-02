@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta property="og:description"
+          content="Приложение 'Мемология' предложит вам пройти тест и поделиться результатом с друзьями">
+    <meta property="og:image" content="images/snippet_img.jpg">
+
+    <title>Пройди тест на мемологию</title>
+
+    <link rel="stylesheet" href="fonts.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="header">
+    <h2 class="header-title" id="text-title-header">Тест</h2>
+    <p class="progress" id="text-title-test-progress"></p>
+</div>
+<section id="page-install" class="content">
+    <div>
+        <h3>Чтобы пройти тест, установите приложение в сообщество</h3>
+        <a href="#" id="btn-show-install-page" target="_blank" class="btn btn-vk-ui">Установить</a>
+    </div>
+</section>
+<section id="page-test" class="content">
+</section>
+<section id="page-results" class="content">
+    <div>
+        <p class="title">Результаты теста</p>
+        <div class="circle">
+            <span id="text-score" class="score"></span>
+            <span id="text-max-score" class="max-score"></span>
+        </div>
+        <a href="#" id="btn-try-again" class="btn">Попробовать снова</a>
+        <div>
+            <div id="wrapper-sharing" class="wrapper-share">
+                <a href="#" id="btn-share" class="btn btn-vk-ui">Поделиться</a>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="wrapper-btn-control">
+    <a href="#" id="btn-question-submit" class="btn btn-question btn-vk-ui hidden">Отправить</a>
+</div>
+</body>
+
+<script src="https://vk.com/js/api/xd_connection.js?2" type="text/javascript"></script>
+<script src="https://vk.com/js/api/share.js?93" type="text/javascript"></script>
+<script src="app.js" type="text/javascript" defer></script>
+
+</html>
